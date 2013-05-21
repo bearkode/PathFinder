@@ -1,14 +1,16 @@
-//
-//  main.m
-//  PathFinder
-//
-//  Created by cgkim on 13. 5. 20..
-//  Copyright (c) 2013년 cgkim. All rights reserved.
-//
+/*
+ *  main.m
+ *  PathFinder
+ *
+ *  Created by bearkode on 13. 5. 20..
+ *  Copyright (c) 2013 bearkode. All rights reserved.
+ *
+ */
 
 #import <Cocoa/Cocoa.h>
 
-int main(int argc, char *argv[])
+
+int main(int aArgc, char *aArgv[])
 {
-    return NSApplicationMain(argc, (const char **)argv);
+    return NSApplicationMain(aArgc, (const char **)aArgv);
 }

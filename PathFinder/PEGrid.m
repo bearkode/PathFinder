@@ -1,10 +1,11 @@
-//
-//  PEGrid.m
-//  PathFinder
-//
-//  Created by cgkim on 13. 5. 20..
-//  Copyright (c) 2013년 cgkim. All rights reserved.
-//
+/*
+ *  PEGrid.m
+ *  PathFinder
+ *
+ *  Created by bearkode on 13. 5. 20..
+ *  Copyright (c) 2013 bearkode. All rights reserved.
+ *
+ */
 
 #import "PEGrid.h"
 #import "PENode.h"
@@ -191,31 +192,6 @@
     
     return sNeighbors;
 };
-
-
-
-//Grid.prototype.clone = function() {
-//    var i, j,
-//    
-//    width = this.width,
-//    height = this.height,
-//    thisNodes = this.nodes,
-//    
-//    newGrid = new Grid(width, height),
-//    newNodes = new Array(height),
-//    row;
-//    
-//    for (i = 0; i < height; ++i) {
-//        newNodes[i] = new Array(width);
-//        for (j = 0; j < width; ++j) {
-//            newNodes[i][j] = new Node(j, i, thisNodes[i][j].walkable);
-//        }
-//    }
-//    
-//    newGrid.nodes = newNodes;
-//    
-//    return newGrid;
-//};
 
 
 @end

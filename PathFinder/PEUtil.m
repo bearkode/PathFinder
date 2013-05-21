@@ -1,10 +1,11 @@
-//
-//  PEUtil.m
-//  PathFinder
-//
-//  Created by cgkim on 13. 5. 20..
-//  Copyright (c) 2013년 cgkim. All rights reserved.
-//
+/*
+ *  PEUtil.m
+ *  PathFinder
+ *
+ *  Created by bearkode on 13. 5. 20..
+ *  Copyright (c) 2013 bearkode. All rights reserved.
+ *
+ */
 
 #import "PEUtil.h"
 #import "PENode.h"

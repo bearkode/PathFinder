@@ -100,22 +100,11 @@
 		2E03D8D91749EE7D003E1A15 /* PathFinder */ = {
 			isa = PBXGroup;
 			children = (
+				2E03D902174B781E003E1A15 /* Finder */,
 				2E03D8E51749EE7D003E1A15 /* PEAppDelegate.h */,
 				2E03D8E61749EE7D003E1A15 /* PEAppDelegate.m */,
 				2E03D8E81749EE7D003E1A15 /* MainMenu.xib */,
 				2E03D8DA1749EE7D003E1A15 /* Supporting Files */,
-				2E03D8F01749EE8F003E1A15 /* PENode.h */,
-				2E03D8F11749EE8F003E1A15 /* PENode.m */,
-				2E03D8F31749F041003E1A15 /* PEGrid.h */,
-				2E03D8F41749F041003E1A15 /* PEGrid.m */,
-				2E03D8F6174A0C49003E1A15 /* PEHeuristic.h */,
-				2E03D8F7174A0C49003E1A15 /* PEHeuristic.m */,
-				2E03D8F9174A0EC5003E1A15 /* PEFinder.h */,
-				2E03D8FA174A0EC6003E1A15 /* PEFinder.m */,
-				2E03D8FC174A2163003E1A15 /* PEHeap.h */,
-				2E03D8FD174A2163003E1A15 /* PEHeap.m */,
-				2E03D8FF174A23CA003E1A15 /* PEUtil.h */,
-				2E03D900174A23CA003E1A15 /* PEUtil.m */,
 			);
 			path = PathFinder;
 			sourceTree = "<group>";
@@ -130,6 +119,25 @@
 				2E03D8E21749EE7D003E1A15 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2E03D902174B781E003E1A15 /* Finder */ = {
+			isa = PBXGroup;
+			children = (
+				2E03D8F01749EE8F003E1A15 /* PENode.h */,
+				2E03D8F11749EE8F003E1A15 /* PENode.m */,
+				2E03D8F31749F041003E1A15 /* PEGrid.h */,
+				2E03D8F41749F041003E1A15 /* PEGrid.m */,
+				2E03D8F6174A0C49003E1A15 /* PEHeuristic.h */,
+				2E03D8F7174A0C49003E1A15 /* PEHeuristic.m */,
+				2E03D8F9174A0EC5003E1A15 /* PEFinder.h */,
+				2E03D8FA174A0EC6003E1A15 /* PEFinder.m */,
+				2E03D8FC174A2163003E1A15 /* PEHeap.h */,
+				2E03D8FD174A2163003E1A15 /* PEHeap.m */,
+				2E03D8FF174A23CA003E1A15 /* PEUtil.h */,
+				2E03D900174A23CA003E1A15 /* PEUtil.m */,
+			);
+			name = Finder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
