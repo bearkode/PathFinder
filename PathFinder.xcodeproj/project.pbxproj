@@ -13,6 +13,12 @@
 		2E03D8E41749EE7D003E1A15 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2E03D8E21749EE7D003E1A15 /* Credits.rtf */; };
 		2E03D8E71749EE7D003E1A15 /* PEAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8E61749EE7D003E1A15 /* PEAppDelegate.m */; };
 		2E03D8EA1749EE7D003E1A15 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E03D8E81749EE7D003E1A15 /* MainMenu.xib */; };
+		2E03D8F21749EE8F003E1A15 /* PENode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8F11749EE8F003E1A15 /* PENode.m */; };
+		2E03D8F51749F041003E1A15 /* PEGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8F41749F041003E1A15 /* PEGrid.m */; };
+		2E03D8F8174A0C49003E1A15 /* PEHeuristic.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8F7174A0C49003E1A15 /* PEHeuristic.m */; };
+		2E03D8FB174A0EC6003E1A15 /* PEFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8FA174A0EC6003E1A15 /* PEFinder.m */; };
+		2E03D8FE174A2163003E1A15 /* PEHeap.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8FD174A2163003E1A15 /* PEHeap.m */; };
+		2E03D901174A23CA003E1A15 /* PEUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D900174A23CA003E1A15 /* PEUtil.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +35,18 @@
 		2E03D8E51749EE7D003E1A15 /* PEAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PEAppDelegate.h; sourceTree = "<group>"; };
 		2E03D8E61749EE7D003E1A15 /* PEAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PEAppDelegate.m; sourceTree = "<group>"; };
 		2E03D8E91749EE7D003E1A15 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		2E03D8F01749EE8F003E1A15 /* PENode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PENode.h; sourceTree = "<group>"; };
+		2E03D8F11749EE8F003E1A15 /* PENode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PENode.m; sourceTree = "<group>"; };
+		2E03D8F31749F041003E1A15 /* PEGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEGrid.h; sourceTree = "<group>"; };
+		2E03D8F41749F041003E1A15 /* PEGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEGrid.m; sourceTree = "<group>"; };
+		2E03D8F6174A0C49003E1A15 /* PEHeuristic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEHeuristic.h; sourceTree = "<group>"; };
+		2E03D8F7174A0C49003E1A15 /* PEHeuristic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEHeuristic.m; sourceTree = "<group>"; };
+		2E03D8F9174A0EC5003E1A15 /* PEFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEFinder.h; sourceTree = "<group>"; };
+		2E03D8FA174A0EC6003E1A15 /* PEFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEFinder.m; sourceTree = "<group>"; };
+		2E03D8FC174A2163003E1A15 /* PEHeap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEHeap.h; sourceTree = "<group>"; };
+		2E03D8FD174A2163003E1A15 /* PEHeap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEHeap.m; sourceTree = "<group>"; };
+		2E03D8FF174A23CA003E1A15 /* PEUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEUtil.h; sourceTree = "<group>"; };
+		2E03D900174A23CA003E1A15 /* PEUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEUtil.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +104,18 @@
 				2E03D8E61749EE7D003E1A15 /* PEAppDelegate.m */,
 				2E03D8E81749EE7D003E1A15 /* MainMenu.xib */,
 				2E03D8DA1749EE7D003E1A15 /* Supporting Files */,
+				2E03D8F01749EE8F003E1A15 /* PENode.h */,
+				2E03D8F11749EE8F003E1A15 /* PENode.m */,
+				2E03D8F31749F041003E1A15 /* PEGrid.h */,
+				2E03D8F41749F041003E1A15 /* PEGrid.m */,
+				2E03D8F6174A0C49003E1A15 /* PEHeuristic.h */,
+				2E03D8F7174A0C49003E1A15 /* PEHeuristic.m */,
+				2E03D8F9174A0EC5003E1A15 /* PEFinder.h */,
+				2E03D8FA174A0EC6003E1A15 /* PEFinder.m */,
+				2E03D8FC174A2163003E1A15 /* PEHeap.h */,
+				2E03D8FD174A2163003E1A15 /* PEHeap.m */,
+				2E03D8FF174A23CA003E1A15 /* PEUtil.h */,
+				2E03D900174A23CA003E1A15 /* PEUtil.m */,
 			);
 			path = PathFinder;
 			sourceTree = "<group>";
@@ -169,6 +199,12 @@
 			files = (
 				2E03D8E01749EE7D003E1A15 /* main.m in Sources */,
 				2E03D8E71749EE7D003E1A15 /* PEAppDelegate.m in Sources */,
+				2E03D8F21749EE8F003E1A15 /* PENode.m in Sources */,
+				2E03D8F51749F041003E1A15 /* PEGrid.m in Sources */,
+				2E03D8F8174A0C49003E1A15 /* PEHeuristic.m in Sources */,
+				2E03D8FB174A0EC6003E1A15 /* PEFinder.m in Sources */,
+				2E03D8FE174A2163003E1A15 /* PEHeap.m in Sources */,
+				2E03D901174A23CA003E1A15 /* PEUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
