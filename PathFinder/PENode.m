@@ -59,6 +59,17 @@
 }
 
 
+- (void)reset
+{
+    mGValue = 0;
+    mFValue = 0;
+    mHValue = 0;
+    mOpened = NO;
+    mClosed = NO;
+    mParent = nil;
+}
+
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"Node (%d, %d) %@", (int)mPosition.x, (int)mPosition.y, (mWalkable) ? @"Walkable" : @"Nonwalkable"];
@@ -68,6 +79,12 @@
 - (BOOL)isEqualTo:(id)aObject
 {
     return (self == aObject) ? YES : NO;
+}
+
+
+- (void)updateFValue
+{
+    mFValue = mGValue + mHValue;
 }
 
 

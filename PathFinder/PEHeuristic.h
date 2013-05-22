@@ -10,6 +10,18 @@
 #import <Foundation/Foundation.h>
 
 
+static inline CGFloat PEHeuristicManhattan(CGFloat x, CGFloat y)
+{
+    return x + y;
+}
+
+
+static inline CGFloat PEHeuristicEuclidean(CGFloat x, CGFloat y)
+{
+    return sqrtf(x * x + y * y);
+}
+
+
 @interface PEHeuristic : NSObject
 
 

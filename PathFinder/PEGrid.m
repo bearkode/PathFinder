@@ -11,11 +11,11 @@
 #import "PENode.h"
 
 
-static inline PENode *PENodeAtPosition(NSArray *aNodes, CGSize aSize, CGPoint aPoint)
+static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
 {
     if ((aPoint.x >= 0 && aPoint.x < aSize.width) && (aPoint.y >= 0 && aPoint.y < aSize.height))
     {
-        return [aNodes objectAtIndex:(aSize.width * aPoint.y + aPoint.x)];
+        return aNodes[(int)(aSize.width * aPoint.y + aPoint.x)];
     }
     else
     {
@@ -26,38 +26,23 @@ static inline PENode *PENodeAtPosition(NSArray *aNodes, CGSize aSize, CGPoint aP
 
 @implementation PEGrid
 {
-    CGSize          mSize;
-    NSMutableArray *mNodes;
+    CGSize mSize;
+    id    *mNodes;
 }
 
 
-- (NSMutableArray *)buildNodes:(unsigned char *)aMatrix
+- (void)buildNodes:(unsigned char *)aMatrix
 {
-    NSMutableArray *sNodes = [NSMutableArray arrayWithCapacity:mSize.width * mSize.height];
+    for (NSInteger y = 0; y < mSize.height; y++)
+    {
+        for (NSInteger x = 0; x < mSize.width; x++)
+        {
+            BOOL    sIsWalkable = (aMatrix[y * (int)mSize.width + x] == 0) ? YES : NO;
+            PENode *sNode       = [[PENode alloc] initWithPosition:CGPointMake(x, y) walkable:sIsWalkable];
 
-    for (NSInteger y = 0; y < mSize.height; y++)
-    {
-        for (NSInteger x = 0; x < mSize.width; x++)
-        {
-            PENode *sNode = [[PENode alloc] initWithPosition:CGPointMake(x, y) walkable:YES];
-            [sNodes addObject:sNode];
-            [sNode release];
+            mNodes[(int)(mSize.width * y + x)] = sNode;
         }
     }
-    
-    for (NSInteger y = 0; y < mSize.height; y++)
-    {
-        for (NSInteger x = 0; x < mSize.width; x++)
-        {
-            if (aMatrix[y * (int)mSize.width + x] != 0)
-            {
-                PENode *sNode = [sNodes objectAtIndex:(y * (int)mSize.width + x)];
-                [sNode setWalkable:NO];
-            }
-        }
-    }
-    
-    return sNodes;
 }
 
 
@@ -68,7 +53,8 @@ static inline PENode *PENodeAtPosition(NSArray *aNodes, CGSize aSize, CGPoint aP
     if (self)
     {
         mSize  = aSize;
-        mNodes = [[self buildNodes:aMatrix] retain];
+        mNodes = malloc(aSize.width * aSize.height * sizeof(id));
+        [self buildNodes:aMatrix];
     }
     
     return self;
@@ -77,9 +63,23 @@ static inline PENode *PENodeAtPosition(NSArray *aNodes, CGSize aSize, CGPoint aP
 
 - (void)dealloc
 {
-    [mNodes release];
+    for (NSInteger i = 0; i < mSize.width * mSize.height; i++)
+    {
+        [mNodes[i] release];
+    }
     
+    free(mNodes);
+
     [super dealloc];
+}
+
+
+- (void)reset
+{
+    for (NSInteger i = 0; i < mSize.width * mSize.height; i++)
+    {
+        [mNodes[i] reset];
+    }
 }
 
 
@@ -105,18 +105,18 @@ static inline PENode *PENodeAtPosition(NSArray *aNodes, CGSize aSize, CGPoint aP
 
 - (NSMutableArray *)neighborsWith:(PENode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners
 {
-    CGFloat         x          = [aNode position].x;
-    CGFloat         y          = [aNode position].y;
     NSMutableArray *sNeighbors = [NSMutableArray array];
-
-    BOOL sS0 = NO;
-    BOOL sS1 = NO;
-    BOOL sS2 = NO;
-    BOOL sS3 = NO;
-    BOOL sD0 = NO;
-    BOOL sD1 = NO;
-    BOOL sD2 = NO;
-    BOOL sD3 = NO;
+    
+    CGFloat x   = [aNode position].x;
+    CGFloat y   = [aNode position].y;
+    BOOL    sS0 = NO;
+    BOOL    sS1 = NO;
+    BOOL    sS2 = NO;
+    BOOL    sS3 = NO;
+    BOOL    sD0 = NO;
+    BOOL    sD1 = NO;
+    BOOL    sD2 = NO;
+    BOOL    sD3 = NO;
 
     PENode *sNode = nil;
     

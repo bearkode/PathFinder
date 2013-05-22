@@ -18,6 +18,8 @@
 
 - (id)initWithSize:(CGSize)aSize matrix:(unsigned char *)aMatrix;
 
+- (void)reset;
+
 - (PENode *)nodeAtPosition:(CGPoint)aPosition;
 - (NSMutableArray *)neighborsWith:(PENode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners;
 - (BOOL)isWalkableAtPosition:(CGPoint)aPosition;

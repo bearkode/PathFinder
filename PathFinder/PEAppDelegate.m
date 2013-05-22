@@ -23,23 +23,36 @@
 }
 
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+- (void)run
 {
-    unsigned char sMatrix[25] = { 0x00, 0x01, 0x00, 0x00, 0x00,
-                                  0x00, 0x01, 0x01, 0x00, 0x00,
-                                  0x00, 0x00, 0x01, 0x00, 0x00,
-                                  0x00, 0x00, 0x01, 0x01, 0x00,
-                                  0x00, 0x00, 0x00, 0x00, 0x00 };
+    unsigned char sMatrix[49] = { 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                  0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
+                                  0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00,
+                                  0x00, 0x00, 0x01, 0x01, 0x00, 0x01, 0x00,
+                                  0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00,
+                                  0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x00,
+                                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        
+    };
     
-    PEGrid         *sGrid   = [[[PEGrid alloc] initWithSize:CGSizeMake(5, 5) matrix:sMatrix] autorelease];
+    PEGrid         *sGrid   = [[[PEGrid alloc] initWithSize:CGSizeMake(7, 7) matrix:sMatrix] autorelease];
     PEFinder       *sFinder = [[[PEFinder alloc] init] autorelease];
     NSMutableArray *sPath   = nil;
-    
-    PEBeginTimeCheck();
-    sPath = [sFinder findPathWithStartPosition:CGPointMake(0, 0) endPosition:CGPointMake(2, 0) grid:sGrid];
-    PEEndTimeCheck();
-    
+
+    for (NSInteger i = 0; i < 100; i++)
+    {
+        [sGrid reset];
+        PEBeginTimeCheck();
+        sPath = [sFinder findPathWithStartPosition:CGPointMake(0, 0) endPosition:CGPointMake(6, 2) grid:sGrid];
+        PEEndTimeCheck();
+    }
     NSLog(@"sPath = %@", sPath);
+}
+
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+    [self performSelector:@selector(run) withObject:nil afterDelay:1.0];
 }
 
 

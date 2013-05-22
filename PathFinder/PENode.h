@@ -26,7 +26,8 @@
 
 - (id)initWithPosition:(CGPoint)aPosition walkable:(BOOL)aWalkable;
 
-
+- (void)reset;
+- (void)updateFValue;
 - (BOOL)isEqualTo:(id)aObject;
 
 
