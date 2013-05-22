@@ -19,7 +19,7 @@
     CGFloat mFValue;
     CGFloat mHValue;
     BOOL    mOpened;
-    PENode *mParent;
+    PENode *mParent;    /*  assign  */
 }
 
 
@@ -43,7 +43,8 @@
         mPosition = aPosition;
         mWalkable = aWalkable;
         
-        mHValue = NAN;
+        mFValue = 0;
+        mHValue = 0;
         mOpened = NO;
         mClosed = NO;
     }
@@ -66,14 +67,7 @@
 
 - (BOOL)isEqualTo:(id)aObject
 {
-    if (self == aObject)
-    {
-        return YES;
-    }
-    else
-    {
-        return NO;
-    }
+    return (self == aObject) ? YES : NO;
 }
 
 

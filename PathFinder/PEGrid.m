@@ -11,6 +11,19 @@
 #import "PENode.h"
 
 
+static inline PENode *PENodeAtPosition(NSArray *aNodes, CGSize aSize, CGPoint aPoint)
+{
+    if ((aPoint.x >= 0 && aPoint.x < aSize.width) && (aPoint.y >= 0 && aPoint.y < aSize.height))
+    {
+        return [aNodes objectAtIndex:(aSize.width * aPoint.y + aPoint.x)];
+    }
+    else
+    {
+        return nil;
+    }
+}
+
+
 @implementation PEGrid
 {
     CGSize          mSize;
@@ -56,8 +69,6 @@
     {
         mSize  = aSize;
         mNodes = [[self buildNodes:aMatrix] retain];
-        
-        NSLog(@"mNodes = %@", mNodes);
     }
     
     return self;
@@ -66,36 +77,27 @@
 
 - (void)dealloc
 {
+    [mNodes release];
+    
     [super dealloc];
 }
 
 
 - (PENode *)nodeAtPosition:(CGPoint)aPosition
 {
-    return [mNodes objectAtIndex:(aPosition.y * mSize.width + aPosition.x)];
+    return PENodeAtPosition(mNodes, mSize, aPosition);
 }
 
 
 - (BOOL)isWalkableAtPosition:(CGPoint)aPosition
 {
-    if ([self isInside:aPosition])
-    {
-        return [[self nodeAtPosition:aPosition] isWalkable];
-    }
-    
-    return NO;
-};
-
-
-- (BOOL)isInside:(CGPoint)aPosition
-{
-    return (aPosition.x >= 0 && aPosition.x < mSize.width) && (aPosition.y >= 0 && aPosition.y < mSize.height);
+    return [PENodeAtPosition(mNodes, mSize, aPosition) isWalkable];
 };
 
 
 - (void)setWalkable:(BOOL)aWalkable atPosition:(CGPoint)aPosition
 {
-    PENode *sNode = [self nodeAtPosition:aPosition];
+    PENode *sNode = PENodeAtPosition(mNodes, mSize, aPosition);
 
     [sNode setWalkable:aWalkable];
 };
@@ -107,43 +109,47 @@
     CGFloat         y          = [aNode position].y;
     NSMutableArray *sNeighbors = [NSMutableArray array];
 
-    BOOL            s0 = false;
-    BOOL            d0 = false;
-    BOOL            s1 = false;
-    BOOL            d1 = false;
-    BOOL            s2 = false;
-    BOOL            d2 = false;
-    BOOL            s3 = false;
-    BOOL            d3 = false;
-    
-//    nodes = this.nodes;
+    BOOL sS0 = NO;
+    BOOL sS1 = NO;
+    BOOL sS2 = NO;
+    BOOL sS3 = NO;
+    BOOL sD0 = NO;
+    BOOL sD1 = NO;
+    BOOL sD2 = NO;
+    BOOL sD3 = NO;
+
+    PENode *sNode = nil;
     
     /*  Up  */
-    if ([self isWalkableAtPosition:CGPointMake(x, y - 1)])
+    sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x, y - 1));
+    if ([sNode isWalkable])
     {
-        [sNeighbors addObject:[self nodeAtPosition:CGPointMake(x, y - 1)]];
-        s0 = true;
+        [sNeighbors addObject:sNode];
+        sS0 = true;
     }
     
     /*  Right  */
-    if ([self isWalkableAtPosition:CGPointMake(x + 1, y)])
+    sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x + 1, y));
+    if ([sNode isWalkable])
     {
-        [sNeighbors addObject:[self nodeAtPosition:CGPointMake(x + 1, y)]];
-        s1 = true;
+        [sNeighbors addObject:sNode];
+        sS1 = true;
     }
     
     /*  Bottom  */
-    if ([self isWalkableAtPosition:CGPointMake(x, y + 1)])
+    sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x, y + 1));
+    if ([sNode isWalkable])
     {
-        [sNeighbors addObject:[self nodeAtPosition:CGPointMake(x, y + 1)]];
-        s2 = true;
+        [sNeighbors addObject:sNode];
+        sS2 = true;
     }
     
     /*  Left  */
-    if ([self isWalkableAtPosition:CGPointMake(x - 1, y)])
+    sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x - 1, y));
+    if ([sNode isWalkable])
     {
-        [sNeighbors addObject:[self nodeAtPosition:CGPointMake(x - 1, y)]];
-        s3 = true;
+        [sNeighbors addObject:sNode];
+        sS3 = true;
     }
     
     if (!aAllowDiagonal)
@@ -153,41 +159,45 @@
     
     if (aDontCrossCorners)
     {
-        d0 = s3 && s0;
-        d1 = s0 && s1;
-        d2 = s1 && s2;
-        d3 = s2 && s3;
+        sD0 = sS3 && sS0;
+        sD1 = sS0 && sS1;
+        sD2 = sS1 && sS2;
+        sD3 = sS2 && sS3;
     }
     else
     {
-        d0 = s3 || s0;
-        d1 = s0 || s1;
-        d2 = s1 || s2;
-        d3 = s2 || s3;
+        sD0 = sS3 || sS0;
+        sD1 = sS0 || sS1;
+        sD2 = sS1 || sS2;
+        sD3 = sS2 || sS3;
     }
     
     /*  Up Left  */
-    if (d0 && [self isWalkableAtPosition:CGPointMake(x - 1, y - 1)])
+    sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x - 1, y - 1));
+    if (sD0 && [sNode isWalkable])
     {
-        [sNeighbors addObject:[self nodeAtPosition:CGPointMake(x - 1, y - 1)]];
+        [sNeighbors addObject:sNode];
     }
     
     /*  Up Right  */
-    if (d1 && [self isWalkableAtPosition:CGPointMake(x + 1, y - 1)])
+    sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x + 1, y - 1));
+    if (sD1 && [sNode isWalkable])
     {
-        [sNeighbors addObject:[self nodeAtPosition:CGPointMake(x + 1, y - 1)]];
+        [sNeighbors addObject:sNode];
     }
     
     /*  Down Right  */
-    if (d2 && [self isWalkableAtPosition:CGPointMake(x + 1, y + 1)])
+    sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x + 1, y + 1));
+    if (sD2 && [sNode isWalkable])
     {
-        [sNeighbors addObject:[self nodeAtPosition:CGPointMake(x + 1, y + 1)]];
+        [sNeighbors addObject:sNode];
     }
     
     /*  Down Left  */
-    if (d3 && [self isWalkableAtPosition:CGPointMake(x - 1, y + 1)])
+    sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x - 1, y + 1));
+    if (sD3 && [sNode isWalkable])
     {
-        [sNeighbors addObject:[self nodeAtPosition:CGPointMake(x - 1, y + 1)]];
+        [sNeighbors addObject:sNode];
     }
     
     return sNeighbors;

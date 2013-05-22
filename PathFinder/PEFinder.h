@@ -15,6 +15,8 @@
 
 @interface PEFinder : NSObject
 
+
 - (NSMutableArray *)findPathWithStartPosition:(CGPoint)aStartPosition endPosition:(CGPoint)aEndPosition grid:(PEGrid *)aGrid;
+
 
 @end

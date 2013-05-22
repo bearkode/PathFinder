@@ -9,6 +9,7 @@
 
 #import "PEUtil.h"
 #import "PENode.h"
+#import "NSValue+Compatibility.h"
 
 
 @implementation PEUtil
@@ -16,21 +17,20 @@
 
 + (NSMutableArray *)backtrace:(PENode *)aNode
 {
-    NSMutableArray *sPath = [NSMutableArray array];
+    NSMutableArray *sPath  = [NSMutableArray array];
+    NSValue        *sValue = nil;
+    PENode         *sNode  = aNode;
     
-    NSValue *sValue = [NSValue valueWithPoint:NSPointFromCGPoint([aNode position])];
+    sValue = [NSValue valueWithCGPoint:[sNode position]];
     [sPath addObject:sValue];
-    
-    PENode *sNode = aNode;
-    
-    while ([sNode parent])
+
+    while ((sNode = [sNode parent]))
     {
-        sNode = [sNode parent];
-        sValue = [NSValue valueWithPoint:NSPointFromCGPoint([sNode position])];
-        [sPath addObject:sValue];
+        sValue = [NSValue valueWithCGPoint:[sNode position]];
+        [sPath insertObject:sValue atIndex:0];
     }
     
-    return [NSMutableArray arrayWithArray:[[sPath reverseObjectEnumerator] allObjects]];
+    return sPath;
 }
 
 

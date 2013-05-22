@@ -15,6 +15,7 @@
 
 + (CGFloat)manhattan:(CGPoint)aDiff;
 + (CGFloat)euclidean:(CGPoint)aDiff;
++ (CGFloat)chebyshev:(CGPoint)aDiff;
 
 
 @end

@@ -19,6 +19,9 @@
 		2E03D8FB174A0EC6003E1A15 /* PEFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8FA174A0EC6003E1A15 /* PEFinder.m */; };
 		2E03D8FE174A2163003E1A15 /* PEHeap.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8FD174A2163003E1A15 /* PEHeap.m */; };
 		2E03D901174A23CA003E1A15 /* PEUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D900174A23CA003E1A15 /* PEUtil.m */; };
+		2E03D905174B7C2E003E1A15 /* PECommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D904174B7C2E003E1A15 /* PECommonUtil.m */; };
+		2E03D907174B7CC0003E1A15 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E03D906174B7CC0003E1A15 /* QuartzCore.framework */; };
+		2EF05B41174C8D910074C3BA /* NSValue+Compatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF05B40174C8D910074C3BA /* NSValue+Compatibility.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +50,11 @@
 		2E03D8FD174A2163003E1A15 /* PEHeap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEHeap.m; sourceTree = "<group>"; };
 		2E03D8FF174A23CA003E1A15 /* PEUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEUtil.h; sourceTree = "<group>"; };
 		2E03D900174A23CA003E1A15 /* PEUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEUtil.m; sourceTree = "<group>"; };
+		2E03D903174B7C2E003E1A15 /* PECommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PECommonUtil.h; sourceTree = "<group>"; };
+		2E03D904174B7C2E003E1A15 /* PECommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PECommonUtil.m; sourceTree = "<group>"; };
+		2E03D906174B7CC0003E1A15 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2EF05B3F174C8D910074C3BA /* NSValue+Compatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSValue+Compatibility.h"; sourceTree = "<group>"; };
+		2EF05B40174C8D910074C3BA /* NSValue+Compatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSValue+Compatibility.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E03D907174B7CC0003E1A15 /* QuartzCore.framework in Frameworks */,
 				2E03D8D41749EE7D003E1A15 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -81,6 +90,7 @@
 		2E03D8D21749EE7D003E1A15 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2E03D906174B7CC0003E1A15 /* QuartzCore.framework */,
 				2E03D8D31749EE7D003E1A15 /* Cocoa.framework */,
 				2E03D8D51749EE7D003E1A15 /* Other Frameworks */,
 			);
@@ -100,9 +110,20 @@
 		2E03D8D91749EE7D003E1A15 /* PathFinder */ = {
 			isa = PBXGroup;
 			children = (
+				2E03D903174B7C2E003E1A15 /* PECommonUtil.h */,
+				2E03D904174B7C2E003E1A15 /* PECommonUtil.m */,
+				2EF05B3F174C8D910074C3BA /* NSValue+Compatibility.h */,
+				2EF05B40174C8D910074C3BA /* NSValue+Compatibility.m */,
 				2E03D902174B781E003E1A15 /* Finder */,
-				2E03D8E51749EE7D003E1A15 /* PEAppDelegate.h */,
+				2E03D8F11749EE8F003E1A15 /* PENode.m */,
+				2E03D8F41749F041003E1A15 /* PEGrid.m */,
+				2E03D8F6174A0C49003E1A15 /* PEHeuristic.h */,
+				2E03D8F9174A0EC5003E1A15 /* PEFinder.h */,
+				2E03D8FA174A0EC6003E1A15 /* PEFinder.m */,
+				2E03D8FD174A2163003E1A15 /* PEHeap.m */,
+				2E03D900174A23CA003E1A15 /* PEUtil.m */,
 				2E03D8E61749EE7D003E1A15 /* PEAppDelegate.m */,
+				2E03D8E51749EE7D003E1A15 /* PEAppDelegate.h */,
 				2E03D8E81749EE7D003E1A15 /* MainMenu.xib */,
 				2E03D8DA1749EE7D003E1A15 /* Supporting Files */,
 			);
@@ -125,17 +146,10 @@
 			isa = PBXGroup;
 			children = (
 				2E03D8F01749EE8F003E1A15 /* PENode.h */,
-				2E03D8F11749EE8F003E1A15 /* PENode.m */,
 				2E03D8F31749F041003E1A15 /* PEGrid.h */,
-				2E03D8F41749F041003E1A15 /* PEGrid.m */,
-				2E03D8F6174A0C49003E1A15 /* PEHeuristic.h */,
 				2E03D8F7174A0C49003E1A15 /* PEHeuristic.m */,
-				2E03D8F9174A0EC5003E1A15 /* PEFinder.h */,
-				2E03D8FA174A0EC6003E1A15 /* PEFinder.m */,
 				2E03D8FC174A2163003E1A15 /* PEHeap.h */,
-				2E03D8FD174A2163003E1A15 /* PEHeap.m */,
 				2E03D8FF174A23CA003E1A15 /* PEUtil.h */,
-				2E03D900174A23CA003E1A15 /* PEUtil.m */,
 			);
 			name = Finder;
 			sourceTree = "<group>";
@@ -168,7 +182,7 @@
 			attributes = {
 				CLASSPREFIX = PE;
 				LastUpgradeCheck = 0460;
-				ORGANIZATIONNAME = cgkim;
+				ORGANIZATIONNAME = bearkode;
 			};
 			buildConfigurationList = 2E03D8CB1749EE7D003E1A15 /* Build configuration list for PBXProject "PathFinder" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -213,6 +227,8 @@
 				2E03D8FB174A0EC6003E1A15 /* PEFinder.m in Sources */,
 				2E03D8FE174A2163003E1A15 /* PEHeap.m in Sources */,
 				2E03D901174A23CA003E1A15 /* PEUtil.m in Sources */,
+				2E03D905174B7C2E003E1A15 /* PECommonUtil.m in Sources */,
+				2EF05B41174C8D910074C3BA /* NSValue+Compatibility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +362,7 @@
 				2E03D8EF1749EE7D003E1A15 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
