@@ -47,11 +47,11 @@
         
         if (sValue1 < sValue2)
         {
-            return NSOrderedAscending;
+            return NSOrderedDescending;
         }
         else if (sValue1 > sValue2)
         {
-            return NSOrderedDescending;
+            return NSOrderedAscending;
         }
         else
         {

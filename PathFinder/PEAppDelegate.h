@@ -8,9 +8,25 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "PEGridView.h"
+
 
 @interface PEAppDelegate : NSObject <NSApplicationDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
+
+@property (assign) IBOutlet PEGridView *gridView;
+@property (assign) IBOutlet NSWindow   *window;
+
+
+- (IBAction)startButtonClicked:(id)aSender;
+- (IBAction)endButtonClicked:(id)aSender;
+- (IBAction)openButtonClicked:(id)aSender;
+- (IBAction)blockButtonClicked:(id)aSender;
+
+- (IBAction)clearButtonClicked:(id)aSender;
+- (IBAction)saveButtonClicked:(id)aSender;
+
+- (IBAction)findButtonClicked:(id)aSender;
+
 
 @end
