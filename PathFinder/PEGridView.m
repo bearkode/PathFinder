@@ -254,6 +254,7 @@
 
 - (void)setStartPoint:(NSPoint)aStartPoint
 {
+    [self setValue:kOpen atPosition:mStartPoint];
     mStartPoint = aStartPoint;
     [self setValue:kStart atPosition:mStartPoint];
 
@@ -269,6 +270,7 @@
 
 - (void)setEndPoint:(NSPoint)aEndPoint
 {
+    [self setValue:kOpen atPosition:mEndPoint];
     mEndPoint = aEndPoint;
     [self setValue:kEnd atPosition:mEndPoint];
     

@@ -134,11 +134,21 @@
     PEGrid         *sGrid      = [[[PEGrid alloc] initWithSize:CGSizeMake(sMapSize.width, sMapSize.height) matrix:sMatrix] autorelease];
     PEFinder       *sFinder    = [[[PEFinder alloc] init] autorelease];
     NSMutableArray *sPath      = nil;
-    
+
+#if (1)
     PEBeginTimeCheck();
     sPath = [sFinder findPathWithStartPosition:CGPointMake(sStartPoint.x, sStartPoint.y) endPosition:CGPointMake(sEndPoint.x, sEndPoint.y) grid:sGrid];
     PEEndTimeCheck();
-
+#else
+    
+    for (NSInteger i = 0; i < 1000; i++)
+    {
+        [sGrid reset];
+        sPath = [sFinder findPathWithStartPosition:CGPointMake(sStartPoint.x, sStartPoint.y) endPosition:CGPointMake(sEndPoint.x, sEndPoint.y) grid:sGrid];
+    }
+    
+#endif
+    
     [mGridView setPath:sPath];
 }
 

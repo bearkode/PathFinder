@@ -11,23 +11,11 @@
 #import "PENode.h"
 
 
-static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
-{
-    if ((aPoint.x >= 0 && aPoint.x < aSize.width) && (aPoint.y >= 0 && aPoint.y < aSize.height))
-    {
-        return aNodes[(int)(aSize.width * aPoint.y + aPoint.x)];
-    }
-    else
-    {
-        return nil;
-    }
-}
-
-
 @implementation PEGrid
 {
-    CGSize mSize;
-    id    *mNodes;
+    CGSize         mSize;
+    id            *mNodes;
+    unsigned char *mWalkable;
 }
 
 
@@ -37,10 +25,12 @@ static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
     {
         for (NSInteger x = 0; x < mSize.width; x++)
         {
-            BOOL    sIsWalkable = (aMatrix[y * (int)mSize.width + x] == 0) ? YES : NO;
-            PENode *sNode       = [[PENode alloc] initWithPosition:CGPointMake(x, y) walkable:sIsWalkable];
+            BOOL      sIsWalkable = (aMatrix[y * (int)mSize.width + x] == 0) ? YES : NO;
+            PENode   *sNode       = [[PENode alloc] initWithPosition:CGPointMake(x, y) walkable:sIsWalkable];
+            NSInteger sIndex      = mSize.width * y + x;
 
-            mNodes[(int)(mSize.width * y + x)] = sNode;
+            mNodes[sIndex]    = sNode;
+            mWalkable[sIndex] = sIsWalkable;
         }
     }
 }
@@ -52,8 +42,10 @@ static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
     
     if (self)
     {
-        mSize  = aSize;
-        mNodes = malloc(aSize.width * aSize.height * sizeof(id));
+        mSize     = aSize;
+        mNodes    = malloc(aSize.width * aSize.height * sizeof(id));
+        mWalkable = malloc(aSize.width * aSize.height * sizeof(unsigned char));
+        
         [self buildNodes:aMatrix];
     }
     
@@ -69,6 +61,7 @@ static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
     }
     
     free(mNodes);
+    free(mWalkable);
 
     [super dealloc];
 }
@@ -91,8 +84,33 @@ static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
 
 - (BOOL)isWalkableAtPosition:(CGPoint)aPosition
 {
-    return [PENodeAtPosition(mNodes, mSize, aPosition) isWalkable];
+    if ((aPosition.x >= 0 && aPosition.x < mSize.width) && (aPosition.y >= 0 && aPosition.y < mSize.height))
+    {
+        return mWalkable[(int)(mSize.width * aPosition.y + aPosition.x)];
+    }
+    else
+    {
+        return NO;
+    }
 };
+
+
+- (unsigned char *)walkableBytes
+{
+    return mWalkable;
+}
+
+
+- (id *)nodesBytes
+{
+    return mNodes;
+}
+
+
+- (CGSize)mapSize
+{
+    return mSize;
+}
 
 
 - (void)setWalkable:(BOOL)aWalkable atPosition:(CGPoint)aPosition
@@ -101,6 +119,114 @@ static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
 
     [sNode setWalkable:aWalkable];
 };
+
+
+- (NSMutableArray *)findNeighbors:(PENode *)aNode
+{
+    static NSMutableArray *sNeighbors = nil;
+    
+    if (sNeighbors)
+    {
+        [sNeighbors removeAllObjects];
+    }
+    else
+    {
+        sNeighbors = [[NSMutableArray alloc] init];
+    }
+    
+    PENode *sParent = [aNode parent];
+    
+    /*  directed pruning: can ignore most neighbors, unless forced.  */
+    if (sParent)
+    {
+        CGPoint sNodePoint   = [aNode position];
+        CGPoint sParentPoint = [sParent position];
+        CGPoint sDirVector;
+        PENode *sNode;
+        
+        /*  get the normalized direction of travel  */
+        sDirVector.x = (sNodePoint.x - sParentPoint.x) / MAX(abs(sNodePoint.x - sParentPoint.x), 1);
+        sDirVector.y = (sNodePoint.y - sParentPoint.y) / MAX(abs(sNodePoint.y - sParentPoint.y), 1);
+        
+        /*  search diagonally  */
+        if (sDirVector.x != 0 && sDirVector.y != 0)
+        {
+            sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y));
+            if ([sNode isWalkable])
+            {
+                [sNeighbors addObject:sNode];
+            }
+            
+            sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y));
+            if ([sNode isWalkable])
+            {
+                [sNeighbors addObject:sNode];
+            }
+            
+            if (PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)) ||
+                PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)))
+            {
+                PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y + sDirVector.y)));
+            }
+            
+            if (!PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x - sDirVector.x, sNodePoint.y)) &&
+                 PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)))
+            {
+                PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x - sDirVector.x, sNodePoint.y + sDirVector.y)));
+            }
+            
+            if (!PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x, sNodePoint.y - sDirVector.y)) &&
+                 PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)))
+            {
+                PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y - sDirVector.y)));
+            }
+        }
+        else  /*  search horizontally/vertically  */
+        {
+            if (sDirVector.x == 0)
+            {
+                if (PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)))
+                {
+                    PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)));
+                    
+                    if (!PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x + 1, sNodePoint.y)))
+                    {
+                        PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x + 1, sNodePoint.y + sDirVector.y)));
+                    }
+                    
+                    if (!PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x - 1, sNodePoint.y)))
+                    {
+                        PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x - 1, sNodePoint.y + sDirVector.y)));
+                    }
+                }
+            }
+            else
+            {
+                if (PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)))
+                {
+                    PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)));
+                    
+                    if (!PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x, sNodePoint.y + 1)))
+                    {
+                        PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y + 1)));
+                    }
+                    
+                    if (!PEIsWalkableAtPosition(mWalkable, mSize, CGPointMake(sNodePoint.x, sNodePoint.y - 1)))
+                    {
+                        PEAddObjectIfNotNil(sNeighbors, PENodeAtPosition(mNodes, mSize, CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y - 1)));
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        /*  return all neighbors  */
+        return [self neighborsWith:aNode allowDiagonal:YES dontCrossCorners:NO];
+    }
+    
+    return sNeighbors;
+}
 
 
 - (NSMutableArray *)neighborsWith:(PENode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners

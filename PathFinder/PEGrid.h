@@ -13,6 +13,41 @@
 @class PENode;
 
 
+static inline void PEAddObjectIfNotNil(NSMutableArray *aArray, id aObject)
+{
+    if (aObject)
+    {
+        [aArray addObject:aObject];
+    }
+}
+
+
+static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
+{
+    if ((aPoint.x >= 0 && aPoint.x < aSize.width) && (aPoint.y >= 0 && aPoint.y < aSize.height))
+    {
+        return aNodes[(int)(aSize.width * aPoint.y + aPoint.x)];
+    }
+    else
+    {
+        return nil;
+    }
+}
+
+
+static inline BOOL PEIsWalkableAtPosition(unsigned char *aWalkables, CGSize aSize, CGPoint aPoint)
+{
+    if ((aPoint.x >= 0 && aPoint.x < aSize.width) && (aPoint.y >= 0 && aPoint.y < aSize.height))
+    {
+        return aWalkables[(int)(aSize.width * aPoint.y + aPoint.x)];
+    }
+    else
+    {
+        return NO;
+    }
+}
+
+
 @interface PEGrid : NSObject
 
 
@@ -21,7 +56,16 @@
 - (void)reset;
 
 - (PENode *)nodeAtPosition:(CGPoint)aPosition;
+
+- (NSMutableArray *)findNeighbors:(PENode *)aNode;
 - (NSMutableArray *)neighborsWith:(PENode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners;
+
 - (BOOL)isWalkableAtPosition:(CGPoint)aPosition;
+
+
+- (unsigned char *)walkableBytes;
+- (id *)nodesBytes;
+- (CGSize)mapSize;
+
 
 @end

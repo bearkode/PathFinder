@@ -17,11 +17,77 @@
 #import "PECommonUtil.h"
 
 
-static inline void PEAddObjectIfNotNil(NSMutableArray *aArray, id aObject)
+#define IS_WALKABLE(a)  PEIsWalkableAtPosition(sWalkable, sMapSize, a)
+
+
+PENode *PEJumpNode(PEGrid *aGrid, PENode *aEndNode, CGFloat aX, CGFloat aY, CGFloat aPX, CGFloat aPY)
 {
-    if (aObject)
+    unsigned char *sWalkable = [aGrid walkableBytes];
+    id            *sNodes    = [aGrid nodesBytes];
+    CGSize         sMapSize  = [aGrid mapSize];
+    
+    CGFloat sNormalizedX     = aX - aPX;
+    CGFloat sNormalizedY     = aY - aPY;
+    CGPoint sCurruntPoint    = CGPointMake(aX, aY);
+    
+    if (!PEIsWalkableAtPosition(sWalkable, sMapSize, sCurruntPoint))
     {
-        [aArray addObject:aObject];
+        return nil;
+    }
+    else if (PENodeAtPosition(sNodes, sMapSize, sCurruntPoint) == aEndNode)
+    {
+        return PENodeAtPosition(sNodes, sMapSize, sCurruntPoint);
+    }
+    
+    /*  check for forced neighbors along the diagonal  */
+    if (sNormalizedX != 0 && sNormalizedY != 0)
+    {
+        if ((IS_WALKABLE(CGPointMake(aX - sNormalizedX, aY + sNormalizedY)) && !IS_WALKABLE(CGPointMake(aX - sNormalizedX, aY))) ||
+            (IS_WALKABLE(CGPointMake(aX + sNormalizedX, aY - sNormalizedY)) && !IS_WALKABLE(CGPointMake(aX, aY - sNormalizedY))))
+        {
+            return PENodeAtPosition(sNodes, sMapSize, sCurruntPoint);
+        }
+        
+        /*  when moving diagonally, must check for vertical/horizontal jump points  */
+//        if (sNormalizedX != 0 && sNormalizedY != 0)
+//        {
+            PENode *sJumpNodeX = PEJumpNode(aGrid, aEndNode, (aX + sNormalizedX), aY, aX, aY);
+            PENode *sJumpNodeY = PEJumpNode(aGrid, aEndNode, aX, (aY + sNormalizedY), aX, aY);
+            
+            if (sJumpNodeX || sJumpNodeY)
+            {
+                return PENodeAtPosition(sNodes, sMapSize, sCurruntPoint);
+            }
+//        }
+    }
+    else  /*  horizontally/vertically  */
+    {
+        if (sNormalizedX != 0 )  /*  moving along x  */
+        {
+            if ((IS_WALKABLE(CGPointMake(aX + sNormalizedX, aY + 1)) && !IS_WALKABLE(CGPointMake(aX, aY + 1))) ||
+                (IS_WALKABLE(CGPointMake(aX + sNormalizedX, aY - 1)) && !IS_WALKABLE(CGPointMake(aX, aY - 1))))
+            {
+                return PENodeAtPosition(sNodes, sMapSize, sCurruntPoint);
+            }
+        }
+        else
+        {
+            if ((IS_WALKABLE(CGPointMake(aX + 1, aY + sNormalizedY)) && !IS_WALKABLE(CGPointMake(aX + 1, aY))) ||
+                (IS_WALKABLE(CGPointMake(aX - 1, aY + sNormalizedY)) && !IS_WALKABLE(CGPointMake(aX - 1, aY))))
+            {
+                return PENodeAtPosition(sNodes, sMapSize, sCurruntPoint);
+            }
+        }
+    }
+    
+    /*  moving diagonally, must make sure one of the vertical/horizontal neighbors is open to allow the path  */
+    if (IS_WALKABLE(CGPointMake(aX + sNormalizedX, aY)) || IS_WALKABLE(CGPointMake(aX, aY + sNormalizedY)))
+    {
+        return PEJumpNode(aGrid, aEndNode, (aX + sNormalizedX), (aY + sNormalizedY), aX, aY);
+    }
+    else
+    {
+        return nil;
     }
 }
 
@@ -86,122 +152,115 @@ static inline void PEAddObjectIfNotNil(NSMutableArray *aArray, id aObject)
 }
 
 
-- (NSMutableArray *)findNeighbors:(PENode *)aNode
-{
-    static NSMutableArray *sNeighbors = nil;
-    
-    if (!sNeighbors)
-    {
-        sNeighbors = [[NSMutableArray alloc] initWithCapacity:100];
-    }
-    
-    [sNeighbors removeAllObjects];
-    
-    PENode *sParent = [aNode parent];
-    PENode *sNode;
-    
-    CGFloat x = [aNode position].x;
-    CGFloat y = [aNode position].y;
-    
-    CGFloat px;
-    CGFloat py;
-    CGFloat dx;
-    CGFloat dy;
-
-    /*  directed pruning: can ignore most neighbors, unless forced.  */
-    if (sParent)
-    {
-        px = [sParent position].x;
-        py = [sParent position].y;
-
-        /*  get the normalized direction of travel  */
-        dx = (x - px) / MAX(abs(x - px), 1);
-        dy = (y - py) / MAX(abs(y - py), 1);
-        
-        /*  search diagonally  */
-        if (dx != 0 && dy != 0)
-        {
-            sNode = [mGrid nodeAtPosition:CGPointMake(x, y + dy)];
-            if ([sNode isWalkable])
-            {
-                [sNeighbors addObject:sNode];
-            }
-            
-            sNode = [mGrid nodeAtPosition:CGPointMake(x + dx, y)];
-            if ([sNode isWalkable])
-            {
-                [sNeighbors addObject:sNode];
-            }
-            
-            if ([mGrid isWalkableAtPosition:CGPointMake(x, y + dy)] || [mGrid isWalkableAtPosition:CGPointMake(x + dx, y)])
-            {
-                PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x + dx, y + dy)]);
-            }
-            
-            if (![mGrid isWalkableAtPosition:CGPointMake(x - dx, y)] && [mGrid isWalkableAtPosition:CGPointMake(x, y + dy)])
-            {
-                PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x - dx, y + dy)]);
-            }
-            
-            if (![mGrid isWalkableAtPosition:CGPointMake(x, y - dy)] && [mGrid isWalkableAtPosition:CGPointMake(x + dx, y)])
-            {
-                PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x + dx, y - dy)]);
-            }
-        }
-        else  /*  search horizontally/vertically  */
-        {
-            if (dx == 0)
-            {
-                if ([mGrid isWalkableAtPosition:CGPointMake(x, y + dy)])
-                {
-                    if ([mGrid isWalkableAtPosition:CGPointMake(x, y + dy)])
-                    {
-                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x, y + dy)]);
-                    }
-                    
-                    if (![mGrid isWalkableAtPosition:CGPointMake(x + 1, y)])
-                    {
-                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x + 1, y + dy)]);
-                    }
-                    
-                    if (![mGrid isWalkableAtPosition:CGPointMake(x - 1, y)])
-                    {
-                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x - 1, y + dy)]);
-                    }
-                }
-            }
-            else
-            {
-                if ([mGrid isWalkableAtPosition:CGPointMake(x + dx, y)])
-                {
-                    if ([mGrid isWalkableAtPosition:CGPointMake(x + dx, y)])
-                    {
-                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x + dx, y)]);
-                    }
-                    
-                    if (![mGrid isWalkableAtPosition:CGPointMake(x, y + 1)])
-                    {
-                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x + dx, y + 1)]);
-                    }
-                    
-                    if (![mGrid isWalkableAtPosition:CGPointMake(x, y - 1)])
-                    {
-                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(x + dx, y - 1)]);
-                    }
-                }
-            }
-        }
-    }
-    else
-    {
-        /*  return all neighbors  */
-        return [mGrid neighborsWith:aNode allowDiagonal:YES dontCrossCorners:NO];
-    }
-    
-    return sNeighbors;
-}
+//- (NSMutableArray *)findNeighbors:(PENode *)aNode
+//{
+//    static NSMutableArray *sNeighbors = nil;
+//    
+//    if (sNeighbors)
+//    {
+//        [sNeighbors removeAllObjects];
+//    }
+//    else
+//    {
+//        sNeighbors = [[NSMutableArray alloc] init];
+//    }
+//
+//    PENode *sParent = [aNode parent];
+//
+//    /*  directed pruning: can ignore most neighbors, unless forced.  */
+//    if (sParent)
+//    {
+//        CGPoint sNodePoint   = [aNode position];
+//        CGPoint sParentPoint = [sParent position];
+//        CGPoint sDirVector;
+//        PENode *sNode;
+//        
+//        /*  get the normalized direction of travel  */
+//        sDirVector.x = (sNodePoint.x - sParentPoint.x) / MAX(abs(sNodePoint.x - sParentPoint.x), 1);
+//        sDirVector.y = (sNodePoint.y - sParentPoint.y) / MAX(abs(sNodePoint.y - sParentPoint.y), 1);
+//        
+//        /*  search diagonally  */
+//        if (sDirVector.x != 0 && sDirVector.y != 0)
+//        {
+//            sNode = [mGrid nodeAtPosition:CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)];
+//            if ([sNode isWalkable])
+//            {
+//                [sNeighbors addObject:sNode];
+//            }
+//            
+//            sNode = [mGrid nodeAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)];
+//            if ([sNode isWalkable])
+//            {
+//                [sNeighbors addObject:sNode];
+//            }
+//            
+//            if ([mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)] ||
+//                [mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)])
+//            {
+//                PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y + sDirVector.y)]);
+//            }
+//            
+//            if (![mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x - sDirVector.x, sNodePoint.y)] &&
+//                 [mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)])
+//            {
+//                PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x - sDirVector.x, sNodePoint.y + sDirVector.y)]);
+//            }
+//            
+//            if (![mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x, sNodePoint.y - sDirVector.y)] &&
+//                 [mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)])
+//            {
+//                PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y - sDirVector.y)]);
+//            }
+//        }
+//        else  /*  search horizontally/vertically  */
+//        {
+//            if (sDirVector.x == 0)
+//            {
+//                if ([mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)])
+//                {
+//                    PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x, sNodePoint.y + sDirVector.y)]);
+//                    
+//                    if (![mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x + 1, sNodePoint.y)])
+//                    {
+//                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x + 1, sNodePoint.y + sDirVector.y)]);
+//                    }
+//                    
+//                    if (![mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x - 1, sNodePoint.y)])
+//                    {
+//                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x - 1, sNodePoint.y + sDirVector.y)]);
+//                    }
+//                }
+//            }
+//            else
+//            {
+//                if ([mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)])
+//                {
+//                    PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y)]);
+//                    
+//                    if (![mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x, sNodePoint.y + 1)])
+//                    {
+//                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y + 1)]);
+//                    }
+//                    
+//                    if (![mGrid isWalkableAtPosition:CGPointMake(sNodePoint.x, sNodePoint.y - 1)])
+//                    {
+//                        PEAddObjectIfNotNil(sNeighbors, [mGrid nodeAtPosition:CGPointMake(sNodePoint.x + sDirVector.x, sNodePoint.y - 1)]);
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    else
+//    {
+//        /*  return all neighbors  */
+//        return [mGrid neighborsWith:aNode allowDiagonal:YES dontCrossCorners:NO];
+//    }
+//    
+//    return sNeighbors;
+//}
 
 
+#if (0)
 - (PENode *)jumpNodeWithX:(CGFloat)aX y:(CGFloat)aY px:(CGFloat)aPX py:(CGFloat)aPY
 {
     CGFloat dx = aX - aPX;
@@ -267,45 +326,50 @@ static inline void PEAddObjectIfNotNil(NSMutableArray *aArray, id aObject)
         return nil;
     }
 }
+#endif
 
 
+#if (0)
 - (void)identifySuccessors:(PENode *)aNode
 {
-    CGFloat sEndX = [[self endNode] position].x;
-    CGFloat sEndY = [[self endNode] position].y;
-    CGFloat x     = [aNode position].x;
-    CGFloat y     = [aNode position].y;
+//    PEBeginTimeCheck();
+    CGPoint sNodePosition = [aNode position];
 
-    NSMutableArray *sNeighbors = [self findNeighbors:aNode];
-
+//    PEBeginTimeCheck();
+    NSMutableArray *sNeighbors = [mGrid findNeighbors:aNode];
+//    PEEndTimeCheck();
+    
+//    PEBeginTimeCheck();
     for (PENode *sNeighbor in sNeighbors)
     {
         CGPoint sNeighborPoint = [sNeighbor position];
-        PENode *sJumpNode      = [self jumpNodeWithX:sNeighborPoint.x y:sNeighborPoint.y px:x py:y];
+//        PEBeginTimeCheck();
+        PENode *sJumpNode      = PEJumpNode(mGrid, mEndNode, sNeighborPoint.x, sNeighborPoint.y, sNodePosition.x, sNodePosition.y);
+//        PEEndTimeCheck();
         
-        if (sJumpNode)
+        if (sJumpNode && ![sJumpNode isClosed])
         {
-            if ([sJumpNode isClosed])
-            {
-                continue;
-            }
+//            PEBeginTimeCheck();
             
             CGPoint sJumpPoint = [sJumpNode position];
-            CGFloat sNewG      = [aNode gValue] + PEHeuristicEuclidean(abs((int)(sJumpPoint.x - x)), abs((int)(sJumpPoint.y - y)));
+            CGFloat sNewG      = [aNode gValue] + PEHeuristicEuclidean(abs((int)(sJumpPoint.x - sNodePosition.x)), abs((int)(sJumpPoint.y - sNodePosition.y)));
             
             if (![sJumpNode isOpened] || sNewG < [sJumpNode gValue])
             {
                 [sJumpNode setGValue:sNewG];
                 if ([sJumpNode hValue] == 0)
                 {
-                    [sJumpNode setHValue:PEHeuristicManhattan(abs((int)(sJumpPoint.x - sEndX)), abs((int)(sJumpPoint.y - sEndY)))];
+                    CGPoint sEndPoint = [mEndNode position];
+                    [sJumpNode setHValue:PEHeuristicManhattan(abs((int)(sJumpPoint.x - sEndPoint.x)), abs((int)(sJumpPoint.y - sEndPoint.y)))];
                 }
                 [sJumpNode updateFValue];  /*  [sJumpNode setFValue:[sJumpNode gValue] + [sJumpNode hValue]];  */
                 [sJumpNode setParent:aNode];
                 
                 if (![sJumpNode isOpened])
                 {
+//                    PEBeginTimeCheck();
                     [mOpenList push:sJumpNode];
+//                    PEEndTimeCheck();
                     [sJumpNode setOpened:YES];
                 }
                 else
@@ -313,9 +377,16 @@ static inline void PEAddObjectIfNotNil(NSMutableArray *aArray, id aObject)
                     [mOpenList updateItem:sJumpNode];
                 }
             }
+            
+//            PEEndTimeCheck();
         }
     }
+//    PEEndTimeCheck();
 }
+#endif
+
+
+#pragma mark -
 
 
 - (NSMutableArray *)findPathWithStartPosition:(CGPoint)aStartPosition endPosition:(CGPoint)aEndPosition grid:(PEGrid *)aGrid
@@ -331,17 +402,53 @@ static inline void PEAddObjectIfNotNil(NSMutableArray *aArray, id aObject)
     [mOpenList push:mStartNode];
     [mStartNode setOpened:YES];
     
-    while (![mOpenList isEmpty])
+    PENode *sNode = nil;
+
+    while ((sNode = [mOpenList pop]))
     {
-        PENode *sNode = [mOpenList pop];
         [sNode setClosed:YES];
-        
-        if ([sNode isEqualTo:mEndNode])
+
+        if (sNode == mEndNode)
         {
             return [PEUtil backtrace:mEndNode];
         }
+
+        CGPoint         sNodePosition = [sNode position];
+        NSMutableArray *sNeighbors    = [mGrid findNeighbors:sNode];
         
-        [self identifySuccessors:sNode];
+        for (PENode *sNeighbor in sNeighbors)
+        {
+            CGPoint sNeighborPoint = [sNeighbor position];
+            PENode *sJumpNode      = PEJumpNode(mGrid, mEndNode, sNeighborPoint.x, sNeighborPoint.y, sNodePosition.x, sNodePosition.y);
+            
+            if (sJumpNode && ![sJumpNode isClosed])
+            {
+                CGPoint sJumpPoint = [sJumpNode position];
+                CGFloat sNewG      = [sNode gValue] + PEHeuristicEuclidean(abs((int)(sJumpPoint.x - sNodePosition.x)), abs((int)(sJumpPoint.y - sNodePosition.y)));
+                
+                if (![sJumpNode isOpened] || sNewG < [sJumpNode gValue])
+                {
+                    [sJumpNode setGValue:sNewG];
+                    if ([sJumpNode hValue] == 0)
+                    {
+                        CGPoint sEndPoint = [mEndNode position];
+                        [sJumpNode setHValue:PEHeuristicManhattan(abs((int)(sJumpPoint.x - sEndPoint.x)), abs((int)(sJumpPoint.y - sEndPoint.y)))];
+                    }
+                    [sJumpNode updateFValue];  /*  [sJumpNode setFValue:[sJumpNode gValue] + [sJumpNode hValue]];  */
+                    [sJumpNode setParent:sNode];
+                    
+                    if (![sJumpNode isOpened])
+                    {
+                        [mOpenList push:sJumpNode];
+                        [sJumpNode setOpened:YES];
+                    }
+                    else
+                    {
+                        [mOpenList updateItem:sJumpNode];
+                    }
+                }
+            }
+        }
     }
     
     return [NSMutableArray array];

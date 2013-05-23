@@ -64,28 +64,56 @@
 - (void)push:(PENode *)aNode
 {
     [mArray addObject:aNode];
-
-    if ([mArray count] > 1)
-    {
-        [self sort];
-    }
 }
 
 
-// pop the position of node which has the minimum `f` value.
-- (PENode *)pop
+- (PENode *)pop  /*  pop the node which has the minimum `f` value.  */
 {
+#if (1)
+    
+    PENode *sResult = nil;
+    CGFloat sMinF   = CGFLOAT_MAX;
+    
+    for (PENode *sNode in mArray)
+    {
+        CGFloat sFValue = [sNode fValue];
+        
+        if (sFValue < sMinF)
+        {
+            sMinF   = sFValue;
+            sResult = sNode;
+        }
+    }
+    
+    [mArray removeObject:sResult];
+    
+    return sResult;
+    
+#else
+    NSInteger sCount = [mArray count];
+    
+    if (sCount == 0)
+    {
+        return nil;
+    }
+    
+    else if ([mArray count] > 1)
+    {
+        [self sort];
+    }
+
     PENode *sResult = [[mArray lastObject] retain];
     [mArray removeLastObject];
     
     return [sResult autorelease];
+#endif
 }
 
 
-- (BOOL)isEmpty
-{
-    return ([mArray count]) ? NO : YES;
-}
+//- (BOOL)isEmpty
+//{
+//    return ([mArray count]) ? NO : YES;
+//}
 
 
 - (void)updateItem:(id)aItem

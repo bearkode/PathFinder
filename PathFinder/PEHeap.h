@@ -20,6 +20,6 @@
 - (PENode *)pop;
 - (void)updateItem:(id)aItem;
 
-- (BOOL)isEmpty;
+//- (BOOL)isEmpty;
 
 @end
