@@ -41,6 +41,7 @@
 - (void)push:(PEPathNode *)aNode
 {
     [mArray addObject:aNode];
+//    NSLog(@"mArray size = %d", (int)[mArray count]);
 }
 
 

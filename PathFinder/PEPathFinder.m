@@ -12,12 +12,23 @@
 #import "PEPathNode.h"
 #import "PEOpenList.h"
 #import "PEUtil.h"
-#import "PEHeuristic.h"
 #import "NSValue+Compatibility.h"
 #import "PECommonUtil.h"
 
 
 #define IS_WALKABLE(a)  PEIsWalkableAtPosition(sWalkable, sMapSize, a)
+
+
+static inline CGFloat PEHeuristicManhattan(CGFloat x, CGFloat y)
+{
+    return x + y;
+}
+
+
+static inline CGFloat PEHeuristicEuclidean(CGFloat x, CGFloat y)
+{
+    return sqrtf(x * x + y * y);
+}
 
 
 PEPathNode *PEFindJumpNode(PEGrid *aGrid, PEPathNode *aEndNode, CGFloat aX, CGFloat aY, CGFloat aPX, CGFloat aPY)
