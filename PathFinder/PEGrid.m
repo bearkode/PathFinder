@@ -8,7 +8,7 @@
  */
 
 #import "PEGrid.h"
-#import "PENode.h"
+#import "PEPathNode.h"
 
 
 @implementation PEGrid
@@ -25,9 +25,9 @@
     {
         for (NSInteger x = 0; x < mSize.width; x++)
         {
-            BOOL      sIsWalkable = (aMatrix[y * (int)mSize.width + x] == 0) ? YES : NO;
-            PENode   *sNode       = [[PENode alloc] initWithPosition:CGPointMake(x, y) walkable:sIsWalkable];
-            NSInteger sIndex      = mSize.width * y + x;
+            BOOL        sIsWalkable = (aMatrix[y * (int)mSize.width + x] == 0) ? YES : NO;
+            PEPathNode *sNode       = [[PEPathNode alloc] initWithPosition:CGPointMake(x, y) walkable:sIsWalkable];
+            NSInteger   sIndex      = mSize.width * y + x;
 
             mNodes[sIndex]    = sNode;
             mWalkable[sIndex] = sIsWalkable;
@@ -76,7 +76,7 @@
 }
 
 
-- (PENode *)nodeAtPosition:(CGPoint)aPosition
+- (PEPathNode *)nodeAtPosition:(CGPoint)aPosition
 {
     return PENodeAtPosition(mNodes, mSize, aPosition);
 }
@@ -115,7 +115,7 @@
 
 - (void)setWalkable:(BOOL)aWalkable atPosition:(CGPoint)aPosition
 {
-    PENode *sNode = PENodeAtPosition(mNodes, mSize, aPosition);
+    PEPathNode *sNode = PENodeAtPosition(mNodes, mSize, aPosition);
 
     [sNode setWalkable:aWalkable];
 };
@@ -124,18 +124,18 @@
 #define INSERT_NODE(a)  if (a) { aResult[sIndex++] = a; }
 
 
-- (void)getNeighborsOfNode:(PENode *)aNode result:(id *)aResult count:(NSInteger *)aCount
+- (void)getNeighborsOfNode:(PEPathNode *)aNode result:(id *)aResult count:(NSInteger *)aCount
 {
-    NSInteger sIndex  = 0;
-    PENode   *sParent = [aNode parent];
+    NSInteger   sIndex  = 0;
+    PEPathNode *sParent = [aNode parent];
     
     /*  directed pruning: can ignore most neighbors, unless forced.  */
     if (sParent)
     {
-        CGPoint sNodePoint   = [aNode position];
-        CGPoint sParentPoint = [sParent position];
-        CGPoint sDirVector;
-        PENode *sNode;
+        CGPoint     sNodePoint   = [aNode position];
+        CGPoint     sParentPoint = [sParent position];
+        CGPoint     sDirVector;
+        PEPathNode *sNode;
         
         /*  get the normalized direction of travel  */
         sDirVector.x = (sNodePoint.x - sParentPoint.x) / MAX(abs(sNodePoint.x - sParentPoint.x), 1);
@@ -225,7 +225,7 @@
     {
         /*  return all neighbors  */
         NSArray *sNeihbors = [self neighborsWith:aNode allowDiagonal:YES dontCrossCorners:NO];
-        for (PENode *sNode in sNeihbors)
+        for (PEPathNode *sNode in sNeihbors)
         {
             aResult[sIndex++] = sNode;
         }
@@ -235,7 +235,7 @@
 }
 
 
-- (NSMutableArray *)neighborsWith:(PENode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners
+- (NSMutableArray *)neighborsWith:(PEPathNode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners
 {
     NSMutableArray *sNeighbors = [NSMutableArray array];
     
@@ -250,14 +250,14 @@
     BOOL    sD2 = NO;
     BOOL    sD3 = NO;
 
-    PENode *sNode = nil;
+    PEPathNode *sNode = nil;
     
     /*  Up  */
     sNode = PENodeAtPosition(mNodes, mSize, CGPointMake(x, y - 1));
     if ([sNode isWalkable])
     {
         [sNeighbors addObject:sNode];
-        sS0 = true;
+        sS0 = YES;
     }
     
     /*  Right  */
@@ -265,7 +265,7 @@
     if ([sNode isWalkable])
     {
         [sNeighbors addObject:sNode];
-        sS1 = true;
+        sS1 = YES;
     }
     
     /*  Bottom  */
@@ -273,7 +273,7 @@
     if ([sNode isWalkable])
     {
         [sNeighbors addObject:sNode];
-        sS2 = true;
+        sS2 = YES;
     }
     
     /*  Left  */
@@ -281,7 +281,7 @@
     if ([sNode isWalkable])
     {
         [sNeighbors addObject:sNode];
-        sS3 = true;
+        sS3 = YES;
     }
     
     if (!aAllowDiagonal)

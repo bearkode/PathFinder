@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 
 
-@class PENode;
+@class PEPathNode;
 
 
 static inline void PEAddObjectIfNotNil(NSMutableArray *aArray, id aObject)
@@ -22,7 +22,7 @@ static inline void PEAddObjectIfNotNil(NSMutableArray *aArray, id aObject)
 }
 
 
-static inline PENode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
+static inline PEPathNode *PENodeAtPosition(id *aNodes, CGSize aSize, CGPoint aPoint)
 {
     if ((aPoint.x >= 0 && aPoint.x < aSize.width) && (aPoint.y >= 0 && aPoint.y < aSize.height))
     {
@@ -55,10 +55,10 @@ static inline BOOL PEIsWalkableAtPosition(unsigned char *aWalkables, CGSize aSiz
 
 - (void)reset;
 
-- (PENode *)nodeAtPosition:(CGPoint)aPosition;
+- (PEPathNode *)nodeAtPosition:(CGPoint)aPosition;
 
-- (void)getNeighborsOfNode:(PENode *)aNode result:(id *)aResult count:(NSInteger *)aCount;
-- (NSMutableArray *)neighborsWith:(PENode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners;
+- (void)getNeighborsOfNode:(PEPathNode *)aNode result:(id *)aResult count:(NSInteger *)aCount;
+- (NSMutableArray *)neighborsWith:(PEPathNode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners;
 
 - (BOOL)isWalkableAtPosition:(CGPoint)aPosition;
 

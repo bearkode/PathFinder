@@ -10,7 +10,7 @@
 #import "PEAppDelegate.h"
 #import "PECommonUtil.h"
 #import "PEGrid.h"
-#import "PEFinder.h"
+#import "PEPathFinder.h"
 #import "NSValue+Compatibility.h"
 
 
@@ -42,7 +42,7 @@
     };
     
     PEGrid         *sGrid   = [[[PEGrid alloc] initWithSize:CGSizeMake(7, 7) matrix:sMatrix] autorelease];
-    PEFinder       *sFinder = [[[PEFinder alloc] init] autorelease];
+    PEPathFinder       *sFinder = [[[PEPathFinder alloc] init] autorelease];
     NSMutableArray *sPath   = nil;
 
     for (NSInteger i = 0; i < 100; i++)
@@ -132,7 +132,7 @@
     unsigned char *sMatrix     = [mGridView matrix];
     
     PEGrid         *sGrid      = [[[PEGrid alloc] initWithSize:CGSizeMake(sMapSize.width, sMapSize.height) matrix:sMatrix] autorelease];
-    PEFinder       *sFinder    = [[[PEFinder alloc] init] autorelease];
+    PEPathFinder       *sFinder    = [[[PEPathFinder alloc] init] autorelease];
     NSMutableArray *sPath      = nil;
 
 #if (1)

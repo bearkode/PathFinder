@@ -8,18 +8,18 @@
  */
 
 #import "PEUtil.h"
-#import "PENode.h"
+#import "PEPathNode.h"
 #import "NSValue+Compatibility.h"
 
 
 @implementation PEUtil
 
 
-+ (NSMutableArray *)backtrace:(PENode *)aNode
++ (NSMutableArray *)backtrace:(PEPathNode *)aNode
 {
     NSMutableArray *sPath  = [NSMutableArray array];
     NSValue        *sValue = nil;
-    PENode         *sNode  = aNode;
+    PEPathNode         *sNode  = aNode;
     
     sValue = [NSValue valueWithCGPoint:[sNode position]];
     [sPath addObject:sValue];

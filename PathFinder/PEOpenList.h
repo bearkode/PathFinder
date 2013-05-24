@@ -1,5 +1,5 @@
 /*
- *  PEUtil.h
+ *  PEOpenList
  *  PathFinder
  *
  *  Created by bearkode on 13. 5. 20..
@@ -13,10 +13,12 @@
 @class PEPathNode;
 
 
-@interface PEUtil : NSObject
+@interface PEOpenList : NSObject
 
 
-+ (NSMutableArray *)backtrace:(PEPathNode *)aNode;
+- (void)push:(PEPathNode *)aNode;
+- (PEPathNode *)pop;
+- (void)updateItem:(id)aItem;
 
 
 @end
