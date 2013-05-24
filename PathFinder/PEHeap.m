@@ -118,10 +118,10 @@
 
 - (void)updateItem:(id)aItem
 {
-    if ([mArray count] > 1)
-    {
-        [self sort];
-    }
+//    if ([mArray count] > 1)
+//    {
+//        [self sort];
+//    }
 };
 
 

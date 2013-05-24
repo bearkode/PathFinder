@@ -57,7 +57,7 @@ static inline BOOL PEIsWalkableAtPosition(unsigned char *aWalkables, CGSize aSiz
 
 - (PENode *)nodeAtPosition:(CGPoint)aPosition;
 
-- (NSMutableArray *)findNeighbors:(PENode *)aNode;
+- (void)getNeighborsOfNode:(PENode *)aNode result:(id *)aResult count:(NSInteger *)aCount;
 - (NSMutableArray *)neighborsWith:(PENode *)aNode allowDiagonal:(BOOL)aAllowDiagonal dontCrossCorners:(BOOL)aDontCrossCorners;
 
 - (BOOL)isWalkableAtPosition:(CGPoint)aPosition;
