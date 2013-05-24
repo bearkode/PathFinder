@@ -9,11 +9,13 @@
 
 #import "PEPathNode.h"
 #import "NSValue+Compatibility.h"
+#import "PECommonUtil.h"
 
 
 @implementation PEPathNode
 {
     CGPoint     mPosition;
+    NSValue    *mPositionValue;
     BOOL        mWalkable;
     CGFloat     mGValue;
     CGFloat     mFValue;
@@ -23,14 +25,15 @@
 }
 
 
-@synthesize position = mPosition;
-@synthesize walkable = mWalkable;
-@synthesize gValue   = mGValue;
-@synthesize fValue   = mFValue;
-@synthesize hValue   = mHValue;
-@synthesize opened   = mOpened;
-@synthesize closed   = mClosed;
-@synthesize parent   = mParent;
+@synthesize position      = mPosition;
+@synthesize positionValue = mPositionValue;
+@synthesize walkable      = mWalkable;
+@synthesize gValue        = mGValue;
+@synthesize fValue        = mFValue;
+@synthesize hValue        = mHValue;
+@synthesize opened        = mOpened;
+@synthesize closed        = mClosed;
+@synthesize parent        = mParent;
 
 
 - (id)initWithPosition:(CGPoint)aPosition walkable:(BOOL)aWalkable
@@ -46,6 +49,8 @@
         mHValue = 0;
         mOpened = NO;
         mClosed = NO;
+        
+        mPositionValue = [[NSValue valueWithCGPoint:mPosition] retain];
     }
     
     return self;
@@ -54,18 +59,22 @@
 
 - (void)dealloc
 {
+    [mPositionValue release];
+    
     [super dealloc];
 }
 
 
 - (void)reset
 {
-    mGValue = 0;
-    mFValue = 0;
-    mHValue = 0;
-    mOpened = NO;
-    mClosed = NO;
-    mParent = nil;
+    mGValue   = 0;
+    mFValue   = 0;
+    mHValue   = 0;
+    mOpened   = NO;
+    mClosed   = NO;
+    mParent   = nil;
+    mPrevNode = nil;
+    mNextNode = nil;
 }
 
 
@@ -90,16 +99,13 @@
 - (NSMutableArray *)backtrace
 {
     NSMutableArray *sPath  = [NSMutableArray array];
-    NSValue        *sValue = nil;
     PEPathNode     *sNode  = self;
     
-    sValue = [NSValue valueWithCGPoint:[sNode position]];
-    [sPath addObject:sValue];
+    [sPath addObject:[sNode positionValue]];
     
     while ((sNode = [sNode parent]))
     {
-        sValue = [NSValue valueWithCGPoint:[sNode position]];
-        [sPath insertObject:sValue atIndex:0];
+        [sPath insertObject:[sNode positionValue] atIndex:0];
     }
     
     return sPath;

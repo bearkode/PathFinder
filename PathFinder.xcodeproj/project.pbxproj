@@ -17,7 +17,6 @@
 		2E03D8F51749F041003E1A15 /* PEGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8F41749F041003E1A15 /* PEGrid.m */; };
 		2E03D8FB174A0EC6003E1A15 /* PEPathFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8FA174A0EC6003E1A15 /* PEPathFinder.m */; };
 		2E03D8FE174A2163003E1A15 /* PEOpenList.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D8FD174A2163003E1A15 /* PEOpenList.m */; };
-		2E03D901174A23CA003E1A15 /* PEUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D900174A23CA003E1A15 /* PEUtil.m */; };
 		2E03D905174B7C2E003E1A15 /* PECommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E03D904174B7C2E003E1A15 /* PECommonUtil.m */; };
 		2E03D907174B7CC0003E1A15 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E03D906174B7CC0003E1A15 /* QuartzCore.framework */; };
 		2EF05B41174C8D910074C3BA /* NSValue+Compatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF05B40174C8D910074C3BA /* NSValue+Compatibility.m */; };
@@ -46,8 +45,6 @@
 		2E03D8FA174A0EC6003E1A15 /* PEPathFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEPathFinder.m; sourceTree = "<group>"; };
 		2E03D8FC174A2163003E1A15 /* PEOpenList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEOpenList.h; sourceTree = "<group>"; };
 		2E03D8FD174A2163003E1A15 /* PEOpenList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEOpenList.m; sourceTree = "<group>"; };
-		2E03D8FF174A23CA003E1A15 /* PEUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEUtil.h; sourceTree = "<group>"; };
-		2E03D900174A23CA003E1A15 /* PEUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEUtil.m; sourceTree = "<group>"; };
 		2E03D903174B7C2E003E1A15 /* PECommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PECommonUtil.h; sourceTree = "<group>"; };
 		2E03D904174B7C2E003E1A15 /* PECommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PECommonUtil.m; sourceTree = "<group>"; };
 		2E03D906174B7CC0003E1A15 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -144,8 +141,6 @@
 				2E03D8FD174A2163003E1A15 /* PEOpenList.m */,
 				2E03D8F9174A0EC5003E1A15 /* PEPathFinder.h */,
 				2E03D8FA174A0EC6003E1A15 /* PEPathFinder.m */,
-				2E03D8FF174A23CA003E1A15 /* PEUtil.h */,
-				2E03D900174A23CA003E1A15 /* PEUtil.m */,
 			);
 			name = Finder;
 			sourceTree = "<group>";
@@ -241,7 +236,6 @@
 				2E03D8F51749F041003E1A15 /* PEGrid.m in Sources */,
 				2E03D8FB174A0EC6003E1A15 /* PEPathFinder.m in Sources */,
 				2E03D8FE174A2163003E1A15 /* PEOpenList.m in Sources */,
-				2E03D901174A23CA003E1A15 /* PEUtil.m in Sources */,
 				2E03D905174B7C2E003E1A15 /* PECommonUtil.m in Sources */,
 				2EF05B41174C8D910074C3BA /* NSValue+Compatibility.m in Sources */,
 				2EF05B46174CB5890074C3BA /* PEGridView.m in Sources */,

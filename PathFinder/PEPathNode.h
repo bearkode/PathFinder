@@ -11,9 +11,14 @@
 
 
 @interface PEPathNode : NSObject
-
+{
+@public
+    PEPathNode *mPrevNode;  /*  assign  */
+    PEPathNode *mNextNode;  /*  assign  */
+}
 
 @property (nonatomic, readonly)            CGPoint     position;
+@property (nonatomic, readonly)            NSValue    *positionValue;
 @property (nonatomic, getter = isWalkable) BOOL        walkable;
 @property (nonatomic, assign)              CGFloat     gValue;
 @property (nonatomic, assign)              CGFloat     fValue;

@@ -11,7 +11,6 @@
 #import "PEGrid.h"
 #import "PEPathNode.h"
 #import "PEOpenList.h"
-#import "PEUtil.h"
 #import "NSValue+Compatibility.h"
 #import "PECommonUtil.h"
 
@@ -184,7 +183,7 @@ PEPathNode *PEFindJumpNode(PEGrid *aGrid, PEPathNode *aEndNode, CGFloat aX, CGFl
 
         if (sNode == mEndNode)
         {
-            return [PEUtil backtrace:mEndNode];
+            return [mEndNode backtrace];
         }
 
         CGPoint   sNodePosition = [sNode position];

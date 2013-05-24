@@ -9,11 +9,13 @@
 
 #import "PEOpenList.h"
 #import "PEPathNode.h"
+#import "PECommonUtil.h"
 
 
 @implementation PEOpenList
 {
-    NSMutableArray *mArray;
+    PEPathNode *mHeadNode;  /* assign */
+    PEPathNode *mTailNode;  /* assign */
 }
 
 
@@ -23,7 +25,8 @@
     
     if (self)
     {
-        mArray = [[NSMutableArray alloc] init];
+        mHeadNode = nil;
+        mTailNode = nil;
     }
     
     return self;
@@ -32,36 +35,80 @@
 
 - (void)dealloc
 {
-    [mArray release];
-    
     [super dealloc];
 }
 
 
 - (void)push:(PEPathNode *)aNode
 {
-    [mArray addObject:aNode];
-//    NSLog(@"mArray size = %d", (int)[mArray count]);
+    CGFloat sFValue = [aNode fValue];
+    
+    if (mHeadNode)
+    {
+        if (sFValue < [mHeadNode fValue])
+        {
+            mHeadNode->mPrevNode = aNode;
+            aNode->mNextNode = mHeadNode;
+            mHeadNode = aNode;
+        }
+        else if (sFValue > [mTailNode fValue])
+        {
+            if (mTailNode)
+            {
+                mTailNode->mNextNode = aNode;
+                aNode->mPrevNode = mTailNode;
+                mTailNode = aNode;
+            }
+        }
+        else
+        {
+            PEPathNode *sNode     = mHeadNode;
+            PEPathNode *sPrevNode = nil;
+            
+            while (1)
+            {
+                sPrevNode = sNode;
+                sNode     = sNode->mNextNode;
+                
+                if (sNode)
+                {
+                    if (sFValue < [sNode fValue])
+                    {
+                        sPrevNode->mNextNode = aNode;
+                        aNode->mNextNode = sNode;
+                        sNode->mPrevNode = aNode;
+                        aNode->mPrevNode = sPrevNode;
+                        break;
+                    }
+                }
+                else
+                {
+                    sPrevNode->mNextNode = aNode;
+                    aNode->mPrevNode = sPrevNode;
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        mHeadNode = aNode;
+        mTailNode = aNode;
+    }
 }
 
 
 - (PEPathNode *)pop  /*  pop the node which has the minimum `f` value.  */
 {
-    PEPathNode *sResult = nil;
-    CGFloat     sMinF   = CGFLOAT_MAX;
-    
-    for (PEPathNode *sNode in mArray)
+    PEPathNode *sResult = mHeadNode;
+
+    if (mHeadNode)
     {
-        CGFloat sFValue = [sNode fValue];
+        mHeadNode = mHeadNode->mNextNode;
         
-        if (sFValue < sMinF)
-        {
-            sMinF   = sFValue;
-            sResult = sNode;
-        }
+        sResult->mPrevNode = nil;
+        sResult->mNextNode = nil;
     }
-    
-    [mArray removeObject:sResult];
     
     return sResult;
 }
