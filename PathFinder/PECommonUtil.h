@@ -10,8 +10,8 @@
 #import <Foundation/Foundation.h>
 
 
-#define PEBeginTimeCheck()           double __sCurrentTime = CACurrentMediaTime()
-#define PEEndTimeCheck()             NSLog(@"time = %f", CACurrentMediaTime() - __sCurrentTime)
+#define PEBeginTimeCheck()  double __sCurrentTime = CACurrentMediaTime()
+#define PEEndTimeCheck()    NSLog(@"time = %f", CACurrentMediaTime() - __sCurrentTime)
 
 
 #if TARGET_OS_IPHONE
@@ -24,8 +24,3 @@ static inline NSString *NSStringFromCGPoint(CGPoint aPoint)
 }
 
 #endif
-
-
-@interface PECommonUtil : NSObject
-
-@end
