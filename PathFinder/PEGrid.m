@@ -36,6 +36,15 @@
 }
 
 
+- (void)clearNodes
+{
+    for (NSInteger i = 0; i < mSize.width * mSize.height; i++)
+    {
+        [mNodes[i] release];
+    }
+}
+
+
 - (id)initWithSize:(CGSize)aSize matrix:(unsigned char *)aMatrix
 {
     self = [super init];
@@ -55,15 +64,19 @@
 
 - (void)dealloc
 {
-    for (NSInteger i = 0; i < mSize.width * mSize.height; i++)
-    {
-        [mNodes[i] release];
-    }
+    [self clearNodes];
     
     free(mNodes);
     free(mWalkable);
 
     [super dealloc];
+}
+
+
+- (void)setMatrix:(unsigned char *)aMatrix
+{
+    [self clearNodes];
+    [self buildNodes:aMatrix];
 }
 
 

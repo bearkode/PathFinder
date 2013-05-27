@@ -100,11 +100,19 @@
 {
     NSMutableArray *sPath  = [NSMutableArray array];
     PEPathNode     *sNode  = self;
+    CGPoint         sPrevPoint;
+    CGPoint         sCurrPoint;
     
     [sPath addObject:[sNode positionValue]];
+    sPrevPoint = [sNode position];
     
     while ((sNode = [sNode parent]))
     {
+        sCurrPoint = [sNode position];
+        
+        CGPoint sDelta = CGPointMake(sPrevPoint.x - sCurrPoint.x, sPrevPoint.y - sCurrPoint.y);
+        NSLog(@"sDelta = %@", NSStringFromCGPoint(sDelta));
+        
         [sPath insertObject:[sNode positionValue] atIndex:0];
     }
     

@@ -53,6 +53,7 @@ static inline BOOL PEIsWalkableAtPosition(unsigned char *aWalkables, CGSize aSiz
 
 - (id)initWithSize:(CGSize)aSize matrix:(unsigned char *)aMatrix;
 
+- (void)setMatrix:(unsigned char *)aMatrix;
 - (void)reset;
 
 - (PEPathNode *)nodeAtPosition:(CGPoint)aPosition;
