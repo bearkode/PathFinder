@@ -110,8 +110,8 @@
     {
         sCurrPoint = [sNode position];
         
-        CGPoint sDelta = CGPointMake(sPrevPoint.x - sCurrPoint.x, sPrevPoint.y - sCurrPoint.y);
-        NSLog(@"sDelta = %@", NSStringFromCGPoint(sDelta));
+//        CGPoint sDelta = CGPointMake(sPrevPoint.x - sCurrPoint.x, sPrevPoint.y - sCurrPoint.y);
+//        NSLog(@"sDelta = %@", NSStringFromCGPoint(sDelta));
         
         [sPath insertObject:[sNode positionValue] atIndex:0];
     }

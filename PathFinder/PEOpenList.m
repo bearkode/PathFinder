@@ -57,6 +57,7 @@
             {
                 mTailNode->mNextNode = aNode;
                 aNode->mPrevNode = mTailNode;
+                aNode->mNextNode = nil;
                 mTailNode = aNode;
             }
         }
@@ -116,8 +117,56 @@
 
 - (void)updateItem:(id)aItem
 {
-    /* DO NOTHING */
+    PEPathNode *sNode     = (PEPathNode *)aItem;
+    PEPathNode *sPrevNode = sNode->mPrevNode;
+    PEPathNode *sNextNode = sNode->mNextNode;
+    
+    if (aItem == mHeadNode)
+    {
+        mHeadNode = sNextNode;
+        mHeadNode->mPrevNode = nil;
+    }
+    else if (aItem == mTailNode)
+    {
+        mTailNode = mTailNode->mPrevNode;
+        mTailNode->mNextNode = nil;
+    }
+    else
+    {
+        if (sPrevNode)
+        {
+            sPrevNode->mNextNode = sNextNode;
+        }
+        
+        if (sNextNode)
+        {
+            sNextNode->mPrevNode = sPrevNode;
+        }
+    }
+
+    [self push:aItem];
 };
+
+
+- (void)printOpenList
+{
+    NSLog(@"==================================== BEGIN");
+    PEPathNode *sNode = mHeadNode;
+    
+    NSLog(@"fValue = %f", [sNode fValue]);
+    
+    while ((sNode = sNode->mNextNode))
+    {
+        NSLog(@"fValue = %f", [sNode fValue]);
+        
+        if (sNode == mTailNode)
+        {
+            break;
+        }
+    }
+    
+    NSLog(@"==================================== END");
+}
 
 
 @end
