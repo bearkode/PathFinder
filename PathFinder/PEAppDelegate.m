@@ -131,8 +131,8 @@
     NSSize         sMapSize    = [mGridView mapSize];
     unsigned char *sMatrix     = [mGridView matrix];
     
-    PEGrid         *sGrid      = [[[PEGrid alloc] initWithSize:CGSizeMake(sMapSize.width, sMapSize.height) matrix:sMatrix] autorelease];
-    PEPathFinder       *sFinder    = [[[PEPathFinder alloc] init] autorelease];
+    PEGrid         *sGrid      = [[[PEGrid alloc] initWithSize:sMapSize matrix:sMatrix] autorelease];
+    PEPathFinder   *sFinder    = [[[PEPathFinder alloc] init] autorelease];
     NSMutableArray *sPath      = nil;
 
 #if (1)

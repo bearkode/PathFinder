@@ -124,12 +124,18 @@
     if (aItem == mHeadNode)
     {
         mHeadNode = sNextNode;
-        mHeadNode->mPrevNode = nil;
+        if (mHeadNode)
+        {
+            mHeadNode->mPrevNode = nil;
+        }
     }
     else if (aItem == mTailNode)
     {
         mTailNode = mTailNode->mPrevNode;
-        mTailNode->mNextNode = nil;
+        if (mTailNode)
+        {
+            mTailNode->mNextNode = nil;
+        }
     }
     else
     {

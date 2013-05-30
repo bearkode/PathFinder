@@ -25,10 +25,10 @@
     {
         for (NSInteger x = 0; x < mSize.width; x++)
         {
-            BOOL        sIsWalkable = (aMatrix[y * (int)mSize.width + x] == 0) ? YES : NO;
-            PEPathNode *sNode       = [[PEPathNode alloc] initWithPosition:CGPointMake(x, y) walkable:sIsWalkable];
             NSInteger   sIndex      = mSize.width * y + x;
-
+            BOOL        sIsWalkable = (aMatrix[sIndex] == 0) ? YES : NO;
+            PEPathNode *sNode       = [[PEPathNode alloc] initWithPosition:CGPointMake(x, y) walkable:sIsWalkable];
+            
             mNodes[sIndex]    = sNode;
             mWalkable[sIndex] = sIsWalkable;
         }
@@ -40,7 +40,10 @@
 {
     for (NSInteger i = 0; i < mSize.width * mSize.height; i++)
     {
-        [mNodes[i] release];
+        if (mNodes[i])
+        {
+            [mNodes[i] release];
+        }
     }
 }
 
