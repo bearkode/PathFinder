@@ -32,13 +32,13 @@ static inline CGFloat PEHeuristicEuclidean(CGFloat x, CGFloat y)
 
 PEPathNode *PEFindJumpNode(PEGrid *aGrid, PEPathNode *aEndNode, CGFloat aX, CGFloat aY, CGFloat aPX, CGFloat aPY)
 {
-    unsigned char *sWalkable = [aGrid walkableBytes];
-    id            *sNodes    = [aGrid nodesBytes];
-    CGSize         sMapSize  = [aGrid mapSize];
+    unsigned char *sWalkable     = aGrid->mWalkable;
+    id            *sNodes        = aGrid->mNodes;
+    CGSize         sMapSize      = aGrid->mSize;
     
-    CGFloat sNormalizedX     = aX - aPX;
-    CGFloat sNormalizedY     = aY - aPY;
-    CGPoint sCurruntPoint    = CGPointMake(aX, aY);
+    CGFloat        sNormalizedX  = aX - aPX;
+    CGFloat        sNormalizedY  = aY - aPY;
+    CGPoint        sCurruntPoint = CGPointMake(aX, aY);
     
     if (!PEIsWalkableAtPosition(sWalkable, sMapSize, sCurruntPoint))
     {

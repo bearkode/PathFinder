@@ -117,16 +117,6 @@
 
 
 @implementation PEPathNode
-{
-    CGPoint     mPosition;
-    NSValue    *mPositionValue;
-    BOOL        mWalkable;
-    CGFloat     mGValue;
-    CGFloat     mFValue;
-    CGFloat     mHValue;
-    BOOL        mOpened;
-    PEPathNode *mParent;    /*  assign  */
-}
 
 
 @synthesize position      = mPosition;

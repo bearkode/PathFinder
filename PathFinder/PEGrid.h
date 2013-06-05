@@ -49,6 +49,12 @@ static inline BOOL PEIsWalkableAtPosition(unsigned char *aWalkables, CGSize aSiz
 
 
 @interface PEGrid : NSObject
+{
+@public
+    CGSize         mSize;
+    id            *mNodes;
+    unsigned char *mWalkable;
+}
 
 
 - (id)initWithSize:(CGSize)aSize matrix:(unsigned char *)aMatrix;

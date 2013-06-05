@@ -12,25 +12,18 @@
 
 
 @implementation PEGrid
-{
-    CGSize         mSize;
-    id            *mNodes;
-    unsigned char *mWalkable;
-}
 
 
-- (void)buildNodes:(unsigned char *)aMatrix
+- (void)buildNodes
 {
     for (NSInteger y = 0; y < mSize.height; y++)
     {
         for (NSInteger x = 0; x < mSize.width; x++)
         {
-            NSInteger   sIndex      = mSize.width * y + x;
-            BOOL        sIsWalkable = (aMatrix[sIndex] == 0) ? YES : NO;
-            PEPathNode *sNode       = [[PEPathNode alloc] initWithPosition:CGPointMake(x, y) walkable:sIsWalkable];
+            NSInteger   sIndex = mSize.width * y + x;
+            PEPathNode *sNode  = [[PEPathNode alloc] initWithPosition:CGPointMake(x, y) walkable:YES];
             
-            mNodes[sIndex]    = sNode;
-            mWalkable[sIndex] = sIsWalkable;
+            mNodes[sIndex] = sNode;
         }
     }
 }
@@ -58,7 +51,15 @@
         mNodes    = malloc(aSize.width * aSize.height * sizeof(id));
         mWalkable = malloc(aSize.width * aSize.height * sizeof(unsigned char));
         
-        [self buildNodes:aMatrix];
+        memset(mNodes, 0, aSize.width * aSize.height * sizeof(id));
+        memset(mWalkable, 0, aSize.width * aSize.height * sizeof(unsigned char));
+        
+        [self buildNodes];
+        
+        if (aMatrix)
+        {
+            [self setMatrix:aMatrix];
+        }
     }
     
     return self;
@@ -69,17 +70,36 @@
 {
     [self clearNodes];
     
-    free(mNodes);
-    free(mWalkable);
-
+    if (mNodes)
+    {
+        free(mNodes);
+    }
+    
+    if (mWalkable)
+    {
+        free(mWalkable);
+    }
+    
     [super dealloc];
 }
 
 
 - (void)setMatrix:(unsigned char *)aMatrix
 {
-    [self clearNodes];
-    [self buildNodes:aMatrix];
+    [self reset];
+    
+    for (NSInteger y = 0; y < mSize.height; y++)
+    {
+        for (NSInteger x = 0; x < mSize.width; x++)
+        {
+            NSInteger   sIndex      = mSize.width * y + x;
+            BOOL        sIsWalkable = (aMatrix[sIndex] == 0) ? YES : NO;
+            PEPathNode *sNode       = mNodes[sIndex];
+            
+            [sNode setWalkable:sIsWalkable];
+            mWalkable[sIndex] = sIsWalkable;
+        }
+    }
 }
 
 
@@ -87,7 +107,16 @@
 {
     for (NSInteger i = 0; i < mSize.width * mSize.height; i++)
     {
-        [mNodes[i] reset];
+        PEPathNode *sPathNode = mNodes[i];
+        
+        sPathNode->mGValue   = 0;
+        sPathNode->mFValue   = 0;
+        sPathNode->mHValue   = 0;
+        sPathNode->mOpened   = NO;
+        sPathNode->mClosed   = NO;
+        sPathNode->mParent   = nil;
+        sPathNode->mPrevNode = nil;
+        sPathNode->mNextNode = nil;
     }
 }
 

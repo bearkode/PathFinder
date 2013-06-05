@@ -13,6 +13,15 @@
 @interface PEPathNode : NSObject
 {
 @public
+    CGPoint     mPosition;
+    NSValue    *mPositionValue;
+    BOOL        mWalkable;
+    CGFloat     mGValue;
+    CGFloat     mFValue;
+    CGFloat     mHValue;
+    BOOL        mOpened;
+    BOOL        mClosed;
+    PEPathNode *mParent;    /*  assign  */
     PEPathNode *mPrevNode;  /*  assign  */
     PEPathNode *mNextNode;  /*  assign  */
 }
