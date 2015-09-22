@@ -183,8 +183,8 @@
         PEPathNode *sNode;
         
         /*  get the normalized direction of travel  */
-        sDirVector.x = (sNodePoint.x - sParentPoint.x) / MAX(abs(sNodePoint.x - sParentPoint.x), 1);
-        sDirVector.y = (sNodePoint.y - sParentPoint.y) / MAX(abs(sNodePoint.y - sParentPoint.y), 1);
+        sDirVector.x = (sNodePoint.x - sParentPoint.x) / MAX(fabs(sNodePoint.x - sParentPoint.x), 1);
+        sDirVector.y = (sNodePoint.y - sParentPoint.y) / MAX(fabs(sNodePoint.y - sParentPoint.y), 1);
         
         /*  search diagonally  */
         if (sDirVector.x != 0 && sDirVector.y != 0)
